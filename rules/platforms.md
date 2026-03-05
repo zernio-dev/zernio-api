@@ -213,6 +213,34 @@ Creates reply chains (Threads equivalent of Twitter threads). Supports up to 10 
 
 Parse modes: `HTML`, `Markdown`, `MarkdownV2`. Supports up to 10 images or videos in albums. Max 4096 chars for text-only, 1024 for media captions.
 
+### Reddit
+
+```json
+{
+  "platformSpecificData": {
+    "subreddit": "distrilicious",
+    "title": "Your post title here",
+    "flairId": "flair_abc123",
+    "url": "https://example.com",
+    "forceSelf": false
+  }
+}
+```
+
+- `subreddit` (effectively required) — target community name, no "r/" prefix. Falls back to default subreddit if omitted. Aliases: `subredditName`, `sr`
+- `title` (required) — max 300 chars. **Cannot be edited after posting.** This is permanent.
+- `flairId` — required by many subreddits. Use `GET /v1/accounts/{accountId}/reddit-flairs?subreddit=NAME` to list available flairs. Alias: `redditFlairId`
+- `url` — creates a link post instead of text post
+- `forceSelf` — forces text post even when media is attached
+
+**Post types supported:** text, link, image, gallery. Video uploads not supported via API.
+
+**Important notes:**
+- Title is permanent — cannot be edited after posting
+- Many subreddits require flair; posts without it will fail
+- Analytics limited to upvotes and comments only
+- Check subreddit rules before posting — Late provides `GET /v1/tools/validate/subreddit` to verify subreddit exists
+
 ### Snapchat
 
 ```json

@@ -11,6 +11,7 @@
 | `DELETE` | `/v1/posts/{postId}` | Delete post |
 | `POST` | `/v1/posts/{postId}/retry` | Retry failed post |
 | `GET` | `/v1/posts/{postId}/logs` | Get publishing logs |
+| `POST` | `/v1/posts/{postId}/unpublish` | Unpublish a published post |
 | `POST` | `/v1/posts/bulk-upload` | Bulk create posts |
 
 ## Create Post
@@ -58,7 +59,19 @@ const post = await fetch('https://getlate.dev/api/v1/posts', {
     mediaItems: [
       { type: 'image', url: 'https://...' },
       { type: 'video', url: 'https://...' }
-    ]
+    ],
+
+    // Optional: platform-specific content overrides
+    customContent: {
+      twitter: 'Short version for Twitter',
+      linkedin: 'Professional version for LinkedIn'
+    },
+
+    // Optional: tags for platforms that support them (e.g., YouTube)
+    tags: ['saas', 'buildinpublic'],
+
+    // Optional: alternative to platforms array
+    // accountIds: ['acc_123', 'acc_456']
   })
 });
 ```
@@ -100,6 +113,40 @@ await fetch('https://getlate.dev/api/v1/posts', {
   })
 });
 ```
+
+## Create Post — Response Schema
+
+```json
+{
+  "id": "post_def456",
+  "content": "Your post text",
+  "status": "scheduled",
+  "scheduledFor": "2026-03-15T09:00:00Z",
+  "platforms": [
+    {
+      "platform": "twitter",
+      "accountId": "acc_tw123",
+      "status": "scheduled",
+      "latePostId": "lp_001"
+    },
+    {
+      "platform": "linkedin",
+      "accountId": "acc_li456",
+      "status": "failed",
+      "error": "token_expired"
+    }
+  ],
+  "mediaItems": [{ "type": "image", "url": "https://..." }],
+  "createdAt": "2026-03-05T10:00:00Z",
+  "updatedAt": "2026-03-05T10:00:00Z"
+}
+```
+
+**Status values:**
+- `scheduled` — will publish at `scheduledFor`
+- `published` — successfully published to all platforms
+- `failed` — all platforms failed
+- `partial` — some platforms succeeded, some failed (check each platform entry's `status`)
 
 ## Retry Failed Posts
 
