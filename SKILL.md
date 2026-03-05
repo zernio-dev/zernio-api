@@ -34,16 +34,17 @@ curl -X POST https://getlate.dev/api/v1/posts \
 Read individual rule files for detailed documentation:
 
 - [rules/authentication.md](rules/authentication.md) - API key format, usage examples, core concepts
-- [rules/posts.md](rules/posts.md) - Create, schedule, retry posts, bulk upload
-- [rules/accounts.md](rules/accounts.md) - List accounts, health checks, follower stats
-- [rules/connect.md](rules/connect.md) - OAuth flows, Bluesky app password, Telegram bot token
-- [rules/platforms.md](rules/platforms.md) - Platform-specific data for all 13 platforms
+- [rules/profiles.md](rules/profiles.md) - Create, list, update, delete profiles (account containers)
+- [rules/posts.md](rules/posts.md) - Create, schedule, retry, unpublish posts, bulk upload
+- [rules/accounts.md](rules/accounts.md) - List accounts, health checks, follower stats, Reddit flairs
+- [rules/connect.md](rules/connect.md) - OAuth flows, headless mode, Bluesky, Telegram, Reddit subreddits
+- [rules/platforms.md](rules/platforms.md) - Platform-specific data for all 13 platforms including Reddit
 - [rules/webhooks.md](rules/webhooks.md) - Configure webhooks, verify signatures, events
-- [rules/media.md](rules/media.md) - Presigned uploads, supported formats, platform limits
+- [rules/media.md](rules/media.md) - Presigned uploads, custom media per platform, auto-compression
 - [rules/queue.md](rules/queue.md) - Queue management, slots configuration
-- [rules/analytics.md](rules/analytics.md) - YouTube daily views, LinkedIn analytics
-- [rules/tools.md](rules/tools.md) - Media download, hashtag checker, transcripts
-- [rules/errors.md](rules/errors.md) - Error codes, rate limits, publishing logs
+- [rules/analytics.md](rules/analytics.md) - Daily metrics, best times, content decay, YouTube, LinkedIn
+- [rules/tools.md](rules/tools.md) - Media download, validation endpoints, hashtag checker
+- [rules/errors.md](rules/errors.md) - Error codes, rate limits, duplicate detection, platform errors
 - [rules/sdks.md](rules/sdks.md) - Direct API usage examples
 
 ## Supported Platforms

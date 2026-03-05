@@ -18,9 +18,52 @@
 | 401 | `UNAUTHORIZED` | Invalid/missing API key |
 | 403 | `FORBIDDEN` | Insufficient permissions |
 | 404 | `NOT_FOUND` | Resource not found |
+| 409 | `DUPLICATE_CONTENT` | Identical content already posted (see below) |
 | 422 | `VALIDATION_ERROR` | Validation failed |
 | 429 | `RATE_LIMITED` | Too many requests |
 | 500 | `INTERNAL_ERROR` | Server error |
+
+## Duplicate Content Detection (Jan 2026)
+
+HTTP 409 is returned when identical content has already been posted to the same account:
+
+```json
+{
+  "error": "This exact content was already posted to this account",
+  "code": "DUPLICATE_CONTENT",
+  "details": {
+    "accountId": "acc_123",
+    "existingPostId": "post_456"
+  }
+}
+```
+
+## Platform Target Errors (Feb 2026)
+
+When a post targets multiple platforms and some fail, the post status is `"partial"`. Each platform target includes three error fields:
+
+```json
+{
+  "status": "partial",
+  "platformTargets": [
+    {
+      "platform": "twitter",
+      "status": "published"
+    },
+    {
+      "platform": "linkedin",
+      "status": "failed",
+      "errorMessage": "Token expired, please reconnect",
+      "errorCategory": "auth_expired",
+      "errorSource": "platform"
+    }
+  ]
+}
+```
+
+**Error categories:** `auth_expired`, `user_content`, `platform_rejected`, `rate_limited`, `media_error`, `system`
+
+**Error sources:** `user` (content issue), `platform` (platform-side rejection), `system` (Late internal error)
 
 ## Rate Limits
 

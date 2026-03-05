@@ -11,6 +11,7 @@
 | `DELETE` | `/v1/posts/{postId}` | Delete post |
 | `POST` | `/v1/posts/{postId}/retry` | Retry failed post |
 | `GET` | `/v1/posts/{postId}/logs` | Get publishing logs |
+| `POST` | `/v1/posts/{postId}/unpublish` | Unpublish a published post |
 | `POST` | `/v1/posts/bulk-upload` | Bulk create posts |
 
 ## Create Post
@@ -58,7 +59,19 @@ const post = await fetch('https://getlate.dev/api/v1/posts', {
     mediaItems: [
       { type: 'image', url: 'https://...' },
       { type: 'video', url: 'https://...' }
-    ]
+    ],
+
+    // Optional: platform-specific content overrides
+    customContent: {
+      twitter: 'Short version for Twitter',
+      linkedin: 'Professional version for LinkedIn'
+    },
+
+    // Optional: tags for platforms that support them (e.g., YouTube)
+    tags: ['saas', 'buildinpublic'],
+
+    // Optional: alternative to platforms array
+    // accountIds: ['acc_123', 'acc_456']
   })
 });
 ```

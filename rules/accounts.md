@@ -26,6 +26,7 @@
 | `PUT` | `/v1/accounts/{accountId}/pinterest-boards` | Set default Pinterest board |
 | `GET` | `/v1/accounts/{accountId}/reddit-subreddits` | List user's subreddits |
 | `PUT` | `/v1/accounts/{accountId}/reddit-subreddits` | Set default subreddit |
+| `GET` | `/v1/accounts/{accountId}/reddit-flairs` | List available flairs for a subreddit |
 
 ## List Accounts
 
@@ -53,3 +54,22 @@ Response indicates if tokens are valid or need reconnection.
 | `DELETE` | `/v1/account-groups/{groupId}` | Delete account group |
 
 Account groups let you organize accounts for bulk posting operations.
+
+## Reddit-Specific Account Endpoints
+
+```bash
+# List subreddits the Reddit account can post to
+curl "https://getlate.dev/api/v1/accounts/ACCOUNT_ID/reddit-subreddits" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Set default posting subreddit
+curl -X PUT "https://getlate.dev/api/v1/accounts/ACCOUNT_ID/reddit-subreddits" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"subreddit": "distrilicious"}'
+
+# List available flairs for a subreddit (many subreddits require flair)
+curl "https://getlate.dev/api/v1/accounts/ACCOUNT_ID/reddit-flairs?subreddit=distrilicious" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# Returns: array of { id, text, ... } — use id as flairId in platformSpecificData
+```
