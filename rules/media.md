@@ -9,7 +9,7 @@
 ## Get Presigned URL
 
 ```bash
-curl -X POST https://getlate.dev/api/v1/media/presign \
+curl -X POST https://zernio.com/api/v1/media/presign \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"filename": "image.jpg", "contentType": "image/jpeg"}'

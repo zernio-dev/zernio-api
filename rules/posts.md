@@ -16,7 +16,7 @@
 ## Create Post
 
 ```typescript
-const post = await fetch('https://getlate.dev/api/v1/posts', {
+const post = await fetch('https://zernio.com/api/v1/posts', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${apiKey}`,
@@ -66,7 +66,7 @@ const post = await fetch('https://getlate.dev/api/v1/posts', {
 ## Post to Multiple Platforms
 
 ```typescript
-await fetch('https://getlate.dev/api/v1/posts', {
+await fetch('https://zernio.com/api/v1/posts', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${apiKey}`,
@@ -87,7 +87,7 @@ await fetch('https://getlate.dev/api/v1/posts', {
 ## Schedule for Later
 
 ```typescript
-await fetch('https://getlate.dev/api/v1/posts', {
+await fetch('https://zernio.com/api/v1/posts', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${apiKey}`,
@@ -105,10 +105,10 @@ await fetch('https://getlate.dev/api/v1/posts', {
 
 ```bash
 # List failed posts
-curl "https://getlate.dev/api/v1/posts?status=failed" \
+curl "https://zernio.com/api/v1/posts?status=failed" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Retry a specific post
-curl -X POST "https://getlate.dev/api/v1/posts/POST_ID/retry" \
+curl -X POST "https://zernio.com/api/v1/posts/POST_ID/retry" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```

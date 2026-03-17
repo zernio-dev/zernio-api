@@ -8,21 +8,21 @@ sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
 
 - Prefix: `sk_`
 - Length: 67 characters
-- Get yours at: [getlate.dev/dashboard/api-keys](https://getlate.dev/dashboard/api-keys)
+- Get yours at: [zernio.com/dashboard/api-keys](https://zernio.com/dashboard/api-keys)
 
 ## Usage Examples
 
 ### curl
 
 ```bash
-curl https://getlate.dev/api/v1/profiles \
+curl https://zernio.com/api/v1/profiles \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### TypeScript
 
 ```typescript
-const response = await fetch('https://getlate.dev/api/v1/profiles', {
+const response = await fetch('https://zernio.com/api/v1/profiles', {
   headers: {
     'Authorization': `Bearer ${process.env.LATE_API_KEY}`
   }
@@ -35,7 +35,7 @@ const response = await fetch('https://getlate.dev/api/v1/profiles', {
 import requests
 
 response = requests.get(
-    'https://getlate.dev/api/v1/profiles',
+    'https://zernio.com/api/v1/profiles',
     headers={'Authorization': f'Bearer {api_key}'}
 )
 ```

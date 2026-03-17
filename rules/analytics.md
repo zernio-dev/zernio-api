@@ -13,7 +13,7 @@
 ## YouTube Daily Views
 
 ```bash
-curl "https://getlate.dev/api/v1/analytics/youtube/daily-views?accountId=ACCOUNT_ID&videoId=VIDEO_ID&startDate=2024-01-01&endDate=2024-01-31" \
+curl "https://zernio.com/api/v1/analytics/youtube/daily-views?accountId=ACCOUNT_ID&videoId=VIDEO_ID&startDate=2024-01-01&endDate=2024-01-31" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -50,18 +50,18 @@ Response:
 
 ```bash
 # Aggregate analytics for account
-curl "https://getlate.dev/api/v1/accounts/ACCOUNT_ID/linkedin-aggregate-analytics" \
+curl "https://zernio.com/api/v1/accounts/ACCOUNT_ID/linkedin-aggregate-analytics" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Analytics for specific post
-curl "https://getlate.dev/api/v1/accounts/ACCOUNT_ID/linkedin-post-analytics?postUrn=URN" \
+curl "https://zernio.com/api/v1/accounts/ACCOUNT_ID/linkedin-post-analytics?postUrn=URN" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ## Follower Stats
 
 ```bash
-curl "https://getlate.dev/api/v1/accounts/follower-stats?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/accounts/follower-stats?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

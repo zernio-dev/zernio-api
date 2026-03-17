@@ -3,7 +3,7 @@
 [![skills.sh](https://img.shields.io/badge/skills.sh-late--api-blue)](https://skills.sh)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Official Claude Code skill for the [Late](https://getlate.dev) Social Media Scheduling API.
+Official Claude Code skill for the [Late](https://zernio.com) Social Media Scheduling API.
 
 ## Installation
 
@@ -43,7 +43,7 @@ Once installed, Claude Code will help you with Late API integration:
 ## Quick Example
 
 ```typescript
-const response = await fetch('https://getlate.dev/api/v1/posts', {
+const response = await fetch('https://zernio.com/api/v1/posts', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${process.env.LATE_API_KEY}`,
@@ -59,9 +59,9 @@ const response = await fetch('https://getlate.dev/api/v1/posts', {
 
 ## Resources
 
-- **Docs:** [getlate.dev/docs](https://getlate.dev/docs)
-- **Dashboard:** [getlate.dev/dashboard](https://getlate.dev/dashboard)
-- **API Keys:** [getlate.dev/dashboard/api-keys](https://getlate.dev/dashboard/api-keys)
+- **Docs:** [zernio.com/docs](https://zernio.com/docs)
+- **Dashboard:** [zernio.com/dashboard](https://zernio.com/dashboard)
+- **API Keys:** [zernio.com/dashboard/api-keys](https://zernio.com/dashboard/api-keys)
 
 ## License
 
@@ -69,4 +69,4 @@ MIT
 
 ---
 
-*[Late](https://getlate.dev) - Social Media Scheduling API for Developers*
+*[Late](https://zernio.com) - Social Media Scheduling API for Developers*

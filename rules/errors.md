@@ -61,7 +61,7 @@ async function fetchWithRetry(url: string, options: RequestInit) {
 Check post logs for platform-specific errors:
 
 ```bash
-curl "https://getlate.dev/api/v1/posts/POST_ID/logs" \
+curl "https://zernio.com/api/v1/posts/POST_ID/logs" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

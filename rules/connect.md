@@ -33,7 +33,7 @@ Some platforms require selecting a page/location after OAuth:
 
 ```bash
 # Get OAuth URL
-curl "https://getlate.dev/api/v1/connect/twitter?profileId=PROFILE_ID&callbackUrl=https://yourapp.com/callback" \
+curl "https://zernio.com/api/v1/connect/twitter?profileId=PROFILE_ID&callbackUrl=https://yourapp.com/callback" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -42,7 +42,7 @@ Returns `{ "url": "https://twitter.com/oauth/..." }` - redirect user there.
 ### Bluesky (App Password)
 
 ```bash
-curl -X POST https://getlate.dev/api/v1/connect/bluesky/credentials \
+curl -X POST https://zernio.com/api/v1/connect/bluesky/credentials \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -58,14 +58,14 @@ curl -X POST https://getlate.dev/api/v1/connect/bluesky/credentials \
 
 ```bash
 # 1. Generate access code
-curl "https://getlate.dev/api/v1/connect/telegram?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/connect/telegram?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Returns: { "code": "LATE-ABC123", "botUsername": "LateScheduleBot", ... }
 
 # 2. User adds bot to channel and sends code to bot
 # 3. Poll for connection status
-curl -X PATCH "https://getlate.dev/api/v1/connect/telegram?code=LATE-ABC123" \
+curl -X PATCH "https://zernio.com/api/v1/connect/telegram?code=LATE-ABC123" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Returns: { "status": "pending" } or { "status": "connected", "account": {...} }
@@ -74,7 +74,7 @@ curl -X PATCH "https://getlate.dev/api/v1/connect/telegram?code=LATE-ABC123" \
 **Option 2: Direct Chat ID (power users)**
 
 ```bash
-curl -X POST https://getlate.dev/api/v1/connect/telegram \
+curl -X POST https://zernio.com/api/v1/connect/telegram \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

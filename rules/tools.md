@@ -19,7 +19,7 @@ Media download and utility tools. Available to paid plans only.
 ## Download Example
 
 ```bash
-curl "https://getlate.dev/api/v1/tools/instagram/download?url=https://www.instagram.com/p/ABC123/" \
+curl "https://zernio.com/api/v1/tools/instagram/download?url=https://www.instagram.com/p/ABC123/" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -28,7 +28,7 @@ Response:
 ```json
 {
   "success": true,
-  "downloadUrl": "https://storage.getlate.dev/downloads/abc123.mp4"
+  "downloadUrl": "https://storage.zernio.com/downloads/abc123.mp4"
 }
 ```
 
@@ -42,7 +42,7 @@ Response:
 ## Hashtag Checker
 
 ```bash
-curl -X POST https://getlate.dev/api/v1/tools/instagram/hashtag-checker \
+curl -X POST https://zernio.com/api/v1/tools/instagram/hashtag-checker \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"hashtags": ["travel", "photography", "banned123"]}'
@@ -65,7 +65,7 @@ Status values: `safe`, `restricted`, `banned`, `unknown`
 ## YouTube Transcript
 
 ```bash
-curl "https://getlate.dev/api/v1/tools/youtube/transcript?url=https://youtube.com/watch?v=dQw4w9WgXcQ" \
+curl "https://zernio.com/api/v1/tools/youtube/transcript?url=https://youtube.com/watch?v=dQw4w9WgXcQ" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

@@ -14,7 +14,7 @@
 ## Add Post to Queue
 
 ```bash
-curl -X POST https://getlate.dev/api/v1/posts \
+curl -X POST https://zernio.com/api/v1/posts \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -27,7 +27,7 @@ curl -X POST https://getlate.dev/api/v1/posts \
 ## Preview Queue
 
 ```bash
-curl "https://getlate.dev/api/v1/queue/preview?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/queue/preview?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -36,7 +36,7 @@ Returns upcoming scheduled posts in queue order.
 ## Get Next Slot
 
 ```bash
-curl "https://getlate.dev/api/v1/queue/next-slot?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/queue/next-slot?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -45,7 +45,7 @@ Returns the next available time slot for posting.
 ## Configure Queue Slots
 
 ```bash
-curl -X PUT https://getlate.dev/api/v1/queue/slots \
+curl -X PUT https://zernio.com/api/v1/queue/slots \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

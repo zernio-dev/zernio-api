@@ -3,7 +3,7 @@
 Use the Late API directly with HTTP requests:
 
 ```typescript
-const BASE_URL = 'https://getlate.dev/api/v1';
+const BASE_URL = 'https://zernio.com/api/v1';
 
 async function lateApi(endpoint: string, options: RequestInit = {}) {
   const response = await fetch(`${BASE_URL}${endpoint}`, {

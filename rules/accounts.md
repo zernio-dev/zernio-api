@@ -30,14 +30,14 @@
 ## List Accounts
 
 ```bash
-curl "https://getlate.dev/api/v1/accounts?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/accounts?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ## Account Health Check
 
 ```bash
-curl "https://getlate.dev/api/v1/accounts/health" \
+curl "https://zernio.com/api/v1/accounts/health" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

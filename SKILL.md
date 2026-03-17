@@ -7,24 +7,24 @@ description: Official Late API reference for scheduling posts across 13 social m
 
 Schedule posts across 13 social media platforms with a single API.
 
-**Base URL:** `https://getlate.dev/api/v1`
+**Base URL:** `https://zernio.com/api/v1`
 
-**Docs:** [getlate.dev/docs](https://getlate.dev/docs)
+**Docs:** [zernio.com/docs](https://zernio.com/docs)
 
 ## Quick Start
 
 ```bash
 # 1. Create profile
-curl -X POST https://getlate.dev/api/v1/profiles \
+curl -X POST https://zernio.com/api/v1/profiles \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{"name": "My Brand"}'
 
 # 2. Connect account (opens OAuth)
-curl "https://getlate.dev/api/v1/connect/twitter?profileId=PROFILE_ID" \
+curl "https://zernio.com/api/v1/connect/twitter?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # 3. Create post
-curl -X POST https://getlate.dev/api/v1/posts \
+curl -X POST https://zernio.com/api/v1/posts \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{"content": "Hello!", "platforms": [{"platform": "twitter", "accountId": "ACC_ID"}], "publishNow": true}'
 ```
@@ -52,4 +52,4 @@ Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bl
 
 ---
 
-*[Late](https://getlate.dev) - Social Media Scheduling API for Developers*
+*[Late](https://zernio.com) - Social Media Scheduling API for Developers*
