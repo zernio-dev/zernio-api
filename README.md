@@ -1,14 +1,14 @@
-# Late API Skill
+# Zernio API Skill
 
-[![skills.sh](https://img.shields.io/badge/skills.sh-late--api-blue)](https://skills.sh)
+[![ClawHub](https://img.shields.io/badge/ClawHub-zernio--api-blue)](https://clawhub.ai/mikipalet/zernio-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Official Claude Code skill for the [Late](https://zernio.com) Social Media Scheduling API.
+Official Claude Code skill for the [Zernio](https://zernio.com) Social Media Scheduling API.
 
 ## Installation
 
 ```bash
-npx skills add mikipalet/skills/late-api
+npx clawhub@latest install mikipalet/zernio-api
 ```
 
 ## What's Included
@@ -16,29 +16,29 @@ npx skills add mikipalet/skills/late-api
 - **Authentication** - API key setup and usage
 - **Quick Start** - Get posting in 4 steps
 - **All Endpoints** - Posts, accounts, profiles, webhooks, media
-- **Platform-Specific** - Features for all 13 platforms
+- **Platform-Specific** - Features for all 14 platforms
 - **Webhooks** - Setup and signature verification
 - **Error Handling** - Common errors and solutions
 - **Code Examples** - curl, TypeScript, Python
 
-## 13 Platforms Supported
+## 14 Platforms Supported
 
-Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, Snapchat
+Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, WhatsApp, Snapchat
 
 ## Usage
 
-Once installed, Claude Code will help you with Late API integration:
+Once installed, Claude Code will help you with Zernio API integration:
 
 ```
-/late-api
+/zernio-api
 ```
 
 ## Example Prompts
 
-- "How do I create a post with the Late API?"
+- "How do I create a post with the Zernio API?"
 - "Show me how to set up webhooks"
 - "What's the endpoint for connecting a Twitter account?"
-- "How do I upload media to Late?"
+- "How do I upload media to Zernio?"
 
 ## Quick Example
 
@@ -46,11 +46,11 @@ Once installed, Claude Code will help you with Late API integration:
 const response = await fetch('https://zernio.com/api/v1/posts', {
   method: 'POST',
   headers: {
-    'Authorization': `Bearer ${process.env.LATE_API_KEY}`,
+    'Authorization': `Bearer ${process.env.ZERNIO_API_KEY}`,
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    content: 'Hello from Late API!',
+    content: 'Hello from Zernio API!',
     platforms: [{ platform: 'twitter', accountId: 'acc_123' }],
     publishNow: true
   })
@@ -59,7 +59,8 @@ const response = await fetch('https://zernio.com/api/v1/posts', {
 
 ## Resources
 
-- **Docs:** [zernio.com/docs](https://zernio.com/docs)
+- **Website:** [zernio.com](https://zernio.com)
+- **Docs:** [docs.zernio.com](https://docs.zernio.com)
 - **Dashboard:** [zernio.com/dashboard](https://zernio.com/dashboard)
 - **API Keys:** [zernio.com/dashboard/api-keys](https://zernio.com/dashboard/api-keys)
 
@@ -69,4 +70,4 @@ MIT
 
 ---
 
-*[Late](https://zernio.com) - Social Media Scheduling API for Developers*
+*[Zernio](https://zernio.com) - Social Media Scheduling API for Developers*

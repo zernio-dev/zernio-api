@@ -1,15 +1,15 @@
 ---
-name: late-api
-description: Official Late API reference for scheduling posts across 13 social media platforms. Covers authentication, endpoints, webhooks, and platform-specific features. Use when building with the Late Social Media Scheduling API.
+name: zernio-api
+description: Official Zernio API reference for scheduling posts across 14 social media platforms. Covers authentication, endpoints, webhooks, and platform-specific features. Use when building with the Zernio Social Media Scheduling API.
 ---
 
-# Late API Reference
+# Zernio API Reference
 
-Schedule posts across 13 social media platforms with a single API.
+Schedule posts across 14 social media platforms with a single API.
 
 **Base URL:** `https://zernio.com/api/v1`
 
-**Docs:** [zernio.com/docs](https://zernio.com/docs)
+**Docs:** [docs.zernio.com](https://docs.zernio.com)
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ Read individual rule files for detailed documentation:
 - [rules/posts.md](rules/posts.md) - Create, schedule, retry posts, bulk upload
 - [rules/accounts.md](rules/accounts.md) - List accounts, health checks, follower stats
 - [rules/connect.md](rules/connect.md) - OAuth flows, Bluesky app password, Telegram bot token
-- [rules/platforms.md](rules/platforms.md) - Platform-specific data for all 13 platforms
+- [rules/platforms.md](rules/platforms.md) - Platform-specific data for all 14 platforms
 - [rules/webhooks.md](rules/webhooks.md) - Configure webhooks, verify signatures, events
 - [rules/media.md](rules/media.md) - Presigned uploads, supported formats, platform limits
 - [rules/queue.md](rules/queue.md) - Queue management, slots configuration
@@ -48,8 +48,8 @@ Read individual rule files for detailed documentation:
 
 ## Supported Platforms
 
-Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, Snapchat
+Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, WhatsApp, Snapchat
 
 ---
 
-*[Late](https://zernio.com) - Social Media Scheduling API for Developers*
+*[Zernio](https://zernio.com) - Social Media Scheduling API for Developers*
