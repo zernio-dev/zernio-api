@@ -1,7 +1,15 @@
-# Zernio API Skill
+<p align="center">
+  <a href="https://zernio.com">
+    <img src="https://zernio.com/brand/icon-primary.png" alt="Zernio" width="60">
+  </a>
+</p>
 
-[![ClawHub](https://img.shields.io/badge/ClawHub-zernio--api-blue)](https://clawhub.ai/mikipalet/zernio-api)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<h1 align="center">Zernio API Skill</h1>
+
+<p align="center">
+  <a href="https://clawhub.ai/mikipalet/zernio-api"><img src="https://img.shields.io/badge/ClawHub-zernio--api-blue" alt="ClawHub"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a>
+</p>
 
 Official Claude Code skill for the [Zernio](https://zernio.com) Social Media Scheduling API.
 
