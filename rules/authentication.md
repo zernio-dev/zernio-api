@@ -24,7 +24,7 @@ curl https://zernio.com/api/v1/profiles \
 ```typescript
 const response = await fetch('https://zernio.com/api/v1/profiles', {
   headers: {
-    'Authorization': `Bearer ${process.env.LATE_API_KEY}`
+    'Authorization': `Bearer ${process.env.ZERNIO_API_KEY}`
   }
 });
 ```
