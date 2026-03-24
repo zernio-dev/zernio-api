@@ -20,7 +20,7 @@ curl -X POST https://zernio.com/api/v1/webhooks/settings \
   -d '{
     "name": "My Webhook",
     "isActive": true,
-    "url": "https://your-server.com/webhooks/late",
+    "url": "https://your-server.com/webhooks/zernio",
     "secret": "your_webhook_secret",
     "events": ["post.published", "post.failed", "account.disconnected"]
   }'
@@ -55,7 +55,7 @@ function verifyWebhook(payload: string, signature: string, secret: string): bool
 }
 
 // In your handler
-const signature = req.headers['x-late-signature'];
+const signature = req.headers['x-zernio-signature'];
 const isValid = verifyWebhook(JSON.stringify(req.body), signature, secret);
 ```
 
@@ -69,7 +69,7 @@ const isValid = verifyWebhook(JSON.stringify(req.body), signature, secret);
   "timestamp": "2024-03-01T10:00:00Z",
   "post": {
     "id": "post_123",
-    "content": "Hello from Late API!",
+    "content": "Hello from Zernio API!",
     "status": "published",
     "scheduledFor": "2024-03-01T10:00:00Z",
     "publishedAt": "2024-03-01T10:00:05Z",
