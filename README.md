@@ -16,7 +16,7 @@ Official Claude Code skill for the [Zernio](https://zernio.com) Social Media Sch
 ## Installation
 
 ```bash
-npx clawhub@latest install Zernio-Api
+npx clawhub@latest install zernio-api
 ```
 
 ## What's Included
