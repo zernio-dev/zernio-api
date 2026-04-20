@@ -17,6 +17,7 @@
 | Google Business | Yes | Updates, photos, offers |
 | Telegram | Bot token | Messages, images, videos |
 | Snapchat | Yes | Stories, Spotlight |
+| Discord | Yes | Webhook posts, embeds, polls, forum threads, announcements |
 
 ## Platform-Specific Data
 
@@ -121,6 +122,80 @@ Platform-specific data goes inside each platform entry in the `platforms` array:
 - `containsSyntheticMedia`: Set `true` for AI-generated content disclosure
 - Videos ≤3 min auto-detected as Shorts; >3 min as regular videos
 - Use top-level `tags` array for video tags (≤500 chars total)
+
+### Reddit
+
+```json
+{
+  "platformSpecificData": {
+    "subreddit": "socialmedia",
+    "title": "Post title (defaults to first line of content, max 300 chars)",
+    "flairId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "url": "https://example.com",
+    "forceSelf": false,
+    "nativeVideo": true,
+    "videogif": false,
+    "videoPosterUrl": "https://example.com/poster.jpg"
+  }
+}
+```
+
+- Posts are **link** (with `url`/media), **native video** (via `nativeVideo`), or **self** (text-only).
+- `subreddit`: without `r/` prefix. Defaults to the account's configured subreddit. List available with `GET /v1/accounts/{id}/reddit-subreddits`.
+- `flairId`: required by some subreddits. List with `GET /v1/accounts/{id}/reddit-flairs?subreddit=name`.
+- `nativeVideo` (default `true` when media is a video) uploads to Reddit's CDN and submits with `kind=video`, rendering as an embedded player. Reddit transcodes server-side (1080p / 30 fps cap). Set `false` to fall back to a legacy link post. If the subreddit blocks video, falls back automatically.
+- `videogif: true` submits as a silent looping videogif (`kind=videogif`).
+- `videoPosterUrl`: optional thumbnail for native video. If omitted, Reddit extracts the first frame.
+- `forceSelf: true` creates a text/self post even when a URL or media is provided.
+
+### Discord
+
+```json
+{
+  "platformSpecificData": {
+    "channelId": "1234567890123456789",
+    "embeds": [
+      {
+        "title": "Release v2.0",
+        "description": "Ships today \ud83d\ude80",
+        "color": 5814783,
+        "fields": [
+          { "name": "Platform", "value": "All", "inline": true }
+        ]
+      }
+    ],
+    "poll": {
+      "question": { "text": "Favorite feature?" },
+      "answers": [
+        { "poll_media": { "text": "Threads" } },
+        { "poll_media": { "text": "Polls" } }
+      ],
+      "duration": 24,
+      "allow_multiselect": false
+    },
+    "tts": false,
+    "webhookUsername": "My Brand",
+    "webhookAvatarUrl": "https://example.com/logo.png",
+    "crosspost": true,
+    "forumThreadName": "Weekly update",
+    "forumAppliedTags": ["1111111111111111111"],
+    "threadFromMessage": {
+      "name": "Discussion",
+      "autoArchiveDuration": 1440
+    }
+  }
+}
+```
+
+- `channelId` (**required**): target channel snowflake. Use `GET /v1/accounts/{id}/discord-channels` to list available channels.
+- **Text limit:** 2,000 characters. Attachments: images (JPEG, PNG, GIF, WebP), videos (MP4), documents, up to 10 files, 25 MB each.
+- `embeds[]`: up to 10 rich embed objects (combined max 6,000 chars). Each supports `title` (256), `description` (4,096), `url`, `color` (decimal integer — convert from hex), `image.url`, `thumbnail.url`, `footer.text` (2,048) / `icon_url`, `author.name` (256) / `url` / `icon_url`, and up to 25 `fields` (`name` 256, `value` 1,024, optional `inline`).
+- `poll`: native Discord poll. Max 10 answers, duration 1-768 hours (default 24). **Cannot** be combined with media attachments.
+- `webhookUsername` / `webhookAvatarUrl`: override the default webhook identity for this post. Defaults come from account-level settings (see `PATCH /v1/accounts/{id}/discord-settings`).
+- `tts: true`: text-to-speech.
+- `crosspost: true`: auto-crosspost to every server following this announcement channel (channel type 5). No-op on regular text channels.
+- `forumThreadName`: **required** when posting to a forum channel (type 15). `forumAppliedTags[]`: up to 5 tag snowflake IDs.
+- `threadFromMessage`: creates a follow-up thread under the published message. `autoArchiveDuration` minutes: `60`, `1440`, `4320`, `10080`. `rateLimitPerUser` seconds: 0-21600.
 
 ### Pinterest
 

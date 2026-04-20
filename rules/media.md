@@ -4,7 +4,8 @@
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/v1/media/presign` | Get presigned upload URL |
+| `POST` | `/v1/media/presign` | Get presigned upload URL (max 5 GB) |
+| `POST` | `/v1/media/upload-direct` | Upload a file directly and receive a public URL (max 25 MB, 7-day retention) |
 
 ## Get Presigned URL
 
@@ -35,6 +36,19 @@ await createPost({
   platforms: [{ platform: 'twitter', accountId: 'acc_123' }]
 });
 ```
+
+## Direct Upload (inbox / messaging)
+
+For inbox messages and small files you have locally, `/v1/media/upload-direct` is simpler than the presign flow. Files auto-delete after 7 days; max 25 MB.
+
+```bash
+curl -X POST https://zernio.com/api/v1/media/upload-direct \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@./photo.jpg"
+# -> { "url": "https://...", "filename": "...", "contentType": "image/jpeg", "size": 123456 }
+```
+
+Optional `contentType` form field overrides MIME auto-detection.
 
 ## Supported Formats
 

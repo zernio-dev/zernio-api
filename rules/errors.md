@@ -74,3 +74,26 @@ curl "https://zernio.com/api/v1/posts/POST_ID/logs" \
 | `GET` | `/v1/posts/{postId}/logs` | Get logs for a post |
 
 Logs are retained for 7 days.
+
+## Usage & Quota
+
+Check the authenticated user's current plan, limits, and usage — useful for surfacing "X of Y uploads used this cycle" UI or pre-flight quota checks:
+
+```bash
+curl "https://zernio.com/api/v1/usage-stats" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+```json
+{
+  "planName": "Pro",
+  "billingPeriod": "monthly",
+  "signupDate": "2024-01-15T10:30:00Z",
+  "billingAnchorDay": 15,
+  "limits":   { "uploads": 500, "profiles": 10 },
+  "usage":    { "uploads": 127, "profiles": 3, "lastReset": "2024-11-01T00:00:00Z" }
+}
+```
+
+Use `usage.lastReset` + `billingAnchorDay` to know when the next cycle flips.

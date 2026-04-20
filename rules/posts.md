@@ -10,6 +10,9 @@
 | `PUT` | `/v1/posts/{postId}` | Update post |
 | `DELETE` | `/v1/posts/{postId}` | Delete post |
 | `POST` | `/v1/posts/{postId}/retry` | Retry failed post |
+| `POST` | `/v1/posts/{postId}/unpublish` | Retract a published post from its platform |
+| `POST` | `/v1/posts/{postId}/edit` | Edit a published post (platform support varies) |
+| `POST` | `/v1/posts/{postId}/update-metadata` | Update post metadata after publishing |
 | `GET` | `/v1/posts/{postId}/logs` | Get publishing logs |
 | `POST` | `/v1/posts/bulk-upload` | Bulk create posts |
 
@@ -112,3 +115,25 @@ curl "https://zernio.com/api/v1/posts?status=failed" \
 curl -X POST "https://zernio.com/api/v1/posts/POST_ID/retry" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
+
+## Edit / Unpublish After Publishing
+
+```bash
+# Retract a published post from the platform
+curl -X POST "https://zernio.com/api/v1/posts/POST_ID/unpublish" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Edit content of a published post (platform support varies)
+curl -X POST "https://zernio.com/api/v1/posts/POST_ID/edit" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Updated content"}'
+
+# Update metadata only (e.g. title, labels, first comment) without changing the published message
+curl -X POST "https://zernio.com/api/v1/posts/POST_ID/update-metadata" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"platformSpecificData": { ... }}'
+```
+
+Edit / unpublish capability varies by platform — the operation will surface a platform error for unsupported combinations (e.g. Twitter doesn't allow editing a free-tier tweet).
