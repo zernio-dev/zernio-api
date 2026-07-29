@@ -24,14 +24,14 @@ npx clawhub@latest install zernio-api
 - **Authentication** - API key setup and usage
 - **Quick Start** - Get posting in 4 steps
 - **All Endpoints** - Posts, accounts, profiles, webhooks, media
-- **Platform-Specific** - Features for all 14 platforms
+- **Platform-Specific** - Features for all 15 platforms
 - **Webhooks** - Setup and signature verification
 - **Error Handling** - Common errors and solutions
 - **Code Examples** - curl, TypeScript, Python
 
-## 14 Platforms Supported
+## 15 Platforms Supported
 
-Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, WhatsApp, Snapchat
+Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, WhatsApp, Snapchat, Discord
 
 ## Usage
 
