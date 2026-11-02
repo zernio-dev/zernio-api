@@ -70,9 +70,9 @@ Read individual rule files for detailed documentation.
 
 - [rules/gmb.md](rules/gmb.md) - Reviews, location details, attributes, services, food menus, photos, action links
 
-**Tools:**
+**Validate:**
 
-- [rules/tools.md](rules/tools.md) - Media download, hashtag checker, transcripts, validators (post / media / subreddit)
+- [rules/tools.md](rules/tools.md) - Validators (post length / post / media / subreddit)
 
 **Admin:**
 
