@@ -50,6 +50,7 @@ Read individual rule files for detailed documentation.
 **Paid ads:**
 
 - [rules/ads.md](rules/ads.md) - List, boost, create, analytics, audiences, conversions (7 ad networks)
+- [rules/fix-conversion-tracking.md](rules/fix-conversion-tracking.md) - Recipe: scan a site's conversion tracking, install the Zernio site tag, forward server-side, verify, rescan
 
 **Messaging & engagement:**
 
