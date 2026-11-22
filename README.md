@@ -16,7 +16,7 @@ Official Claude Code skill for the [Zernio](https://zernio.com) Social Media Sch
 ## Installation
 
 ```bash
-npx clawhub@latest install zernio-api
+npx clawhub@latest install mikipalet/zernio-api
 ```
 
 ## What's Included
@@ -24,14 +24,16 @@ npx clawhub@latest install zernio-api
 - **Authentication** - API key setup and usage
 - **Quick Start** - Get posting in 4 steps
 - **All Endpoints** - Posts, accounts, profiles, webhooks, media
-- **Platform-Specific** - Features for all 16 platforms
+- **Platform-Specific** - Features for each platform
 - **Webhooks** - Setup and signature verification
 - **Error Handling** - Common errors and solutions
 - **Code Examples** - curl, TypeScript, Python
 
-## 16 Platforms Supported
+## Platforms
 
-Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Bluesky, Threads, Google Business, Telegram, WhatsApp, Snapchat, Discord, Slack
+**Posting (18):** Instagram, TikTok, X, LinkedIn, Facebook, YouTube, Threads, Pinterest, Bluesky, Google Business, Snapchat, WhatsApp, Telegram, Discord, Slack, iMessage, LINE, WeChat
+
+**Ads (9):** Meta, Google, TikTok, LinkedIn, Pinterest, X, Reddit, OpenAI, Microsoft
 
 ## Usage
 

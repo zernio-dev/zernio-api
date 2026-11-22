@@ -95,7 +95,8 @@ The Zernio bot must already be added as admin in your channel/group.
 
 - **Same-token platforms** (`facebook`, `instagram`, `linkedin`, `pinterest`): copies the OAuth token from the existing posting account and creates an ads account (`metaads`, `linkedinads`, `pinterestads`). No extra OAuth.
 - **Separate-token platforms** (`tiktok`, `twitter`): starts a platform marketing-API OAuth flow and creates an ads account (`tiktokads`, `xads`) with its own token. **Requires `accountId`** of the existing posting account.
-- **Standalone platforms** (`googleads`): starts Google Ads OAuth and creates a standalone ads account with no parent.
+- **Standalone platforms** (`googleads`, `redditads`, `microsoftads`): starts that network's OAuth and creates a standalone ads account with no parent.
+- **Credential platforms:** OpenAI Ads takes an API key from ChatGPT Ads Manager (`POST /v1/connect/openai-ads/credentials`). For conversions only, Snapchat takes a Snap Pixel ID and a Conversions API token (`POST /v1/connect/snapchat-ads/credentials`).
 
 ```bash
 # Same-token — Meta inherits from the posting account
@@ -111,7 +112,16 @@ curl "https://zernio.com/api/v1/connect/googleads/ads?profileId=PROFILE_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
-Response is either `{ authUrl, state }` (redirect the user) or `{ alreadyConnected: true, accountId, ... }` if an ads account already exists. Returns `403 Ads add-on required` without the add-on. Ads accounts appear in `GET /v1/accounts` with the ads platform values (`metaads`, `tiktokads`, `xads`, `googleads`, `linkedinads`, `pinterestads`). See `ads.md` for using them.
+Response is either `{ authUrl, state }` (redirect the user) or `{ alreadyConnected: true, accountId, ... }` if an ads account already exists. Returns `403 Ads add-on required` without the add-on. Ads accounts appear in `GET /v1/accounts` with the ads platform values (`metaads`, `googleads`, `tiktokads`, `linkedinads`, `pinterestads`, `xads`, `redditads`, `openaiads`, `microsoftads`, plus `snapchatads` for conversions). See `ads.md` for using them.
+
+## HighLevel (CRM)
+
+`GET /v1/connect/gohighlevel?profileId=PROFILE_ID` returns an `authUrl`, or install the Zernio app from the HighLevel marketplace (an agency can bulk-install across sub-accounts). Each connected account (`platform: "gohighlevel"`) is one sub-account. Once connected:
+
+- CRM events become server-side conversions (`source: "gohighlevel"`): inbound contacts as `Lead`, opportunities as `QualifiedLead`, won deals and paid invoices or orders as `Purchase`, bookings as `Schedule`. With `reportToAds` on they are forwarded through `POST /v1/events`.
+- The CRM API (`/v1/crm/{accountId}/contacts`, `/contacts/search`, `/contacts/{contactId}/activities`, `/deals`, `/owners`) reads and writes the sub-account, with the same requests as HubSpot and Salesforce.
+
+Docs: https://docs.zernio.com/platforms/gohighlevel
 
 ## Headless Flows
 

@@ -25,8 +25,8 @@ A platform with `status: "good"` is done. The others are the ones to fix. `fixPr
 ## 2. Pick the profile and connect the ad accounts
 
 1. `profiles_list`, and ask the user which profile the site belongs to when there is more than one.
-2. `accounts_list` with that `profile_id` and the ads platform (`metaads`, `googleads`, `tiktokads`, `linkedinads`, `pinterestads`, `xads`, `redditads`, `microsoftads`, `snapchatads`). Keep each ads account's id.
-3. For a network with no ads account: `connect_ads` with `profile_id` and `platform` (`facebook` for Meta, `googleads`, `tiktok`, `linkedin`, `pinterest`, `twitter`, `redditads`, `microsoftads`) returns an `authUrl`. Give it to the user to open in their browser, wait until they say it is done, then list the accounts again. Google Analytics 4 connects with `connect_get_google_analytics_connect_url` instead (then `connect_list_google_analytics_properties` and `connect_select_google_analytics_property`).
+2. `accounts_list` with that `profile_id` and the ads platform (`metaads`, `googleads`, `tiktokads`, `linkedinads`, `pinterestads`, `xads`, `redditads`, `microsoftads`, `snapchatads`, `openaiads`). Keep each ads account's id.
+3. For a network with no ads account: `connect_ads` with `profile_id` and `platform` (`facebook` for Meta, `googleads`, `tiktok`, `linkedin`, `pinterest`, `twitter`, `redditads`, `microsoftads`) returns an `authUrl`. Give it to the user to open in their browser, wait until they say it is done, then list the accounts again. Google Analytics 4 connects with `connect_get_google_analytics_connect_url` instead (then `connect_list_google_analytics_properties` and `connect_select_google_analytics_property`). Snapchat connects with its Snap Pixel ID and a Conversions API token (`connect_snapchat_ads_credentials`), OpenAI Ads with an API key from ChatGPT Ads Manager (`connect_open_ai_ads_credentials`): ask the user for them.
 
 ## 3. Create the tracking site
 
@@ -59,12 +59,23 @@ fbq('track', 'Purchase', { value: order.total, currency: 'USD' }, { eventID: eve
 - Conversions are `Purchase`, `Lead`, `CompleteRegistration`, `Subscribe`, `StartTrial`, `SubmitApplication`, `Schedule` and `Contact`. Only these are stored and sent to Google Ads and LinkedIn.
 - GA4 and Elevar ecommerce events the site already pushes to `dataLayer` (`purchase`, `generate_lead`, `sign_up`...) are read without code: don't send them twice.
 - After a form or login, `zernio('identify', { email, phone, externalId })` raises match quality. LinkedIn drops events without an email, an external id or its click id.
-- The tag follows Google Consent Mode and the site's cookie banner. Without ad storage consent nothing is forwarded: don't bypass the banner.
+- The tag reads the site's cookie banner and, with the site's `consentModeBridge` on (the default for new sites), writes the banner's answer into Google Consent Mode v2. Without ad storage consent nothing is forwarded: don't bypass the banner.
 - A Content Security Policy must allow `edge.zernio-edge.com` in `script-src` and `connect-src`.
 
 Show the user the diff, and deploy only when they agree.
 
-## 5. Forward to each network's own pixel
+## 5. Serve the tag from the site
+
+Do this when the scan shows cookies Safari cuts to 7 days. A path of the site itself, forwarded to Zernio, sets the cookies from the site's own server, which Safari keeps.
+
+1. `conversions_update_tracking_site` with `site_id` and `body: { "proxyPath": "/zt" }` (REST: `PATCH /v1/tracking-sites/{siteId}`), using a path the site does not serve pages on. Keep `site.siteKey` and `site.proxy.secret`.
+2. Add the ready-made proxy for the site's platform (Next.js, Vercel, Cloudflare Workers, Netlify, nginx, WordPress) from https://docs.zernio.com/products/server-side-tracking/own-domain-path, with `ZERNIO_SITE_KEY` and `ZERNIO_PROXY_SECRET` set to those two values. A plain rewrite rule is not enough: it cannot sign the request.
+3. Replace the tag with the new `site.install.snippet`, which loads from the site's own path.
+4. After the deploy, `conversions_check_tracking_site_proxy` with `site_id` (REST: `POST /v1/tracking-sites/{siteId}/proxy-check`) until `proxy.status` is `verified`.
+
+A Shopify store can do this only when its domain runs through its own Cloudflare zone (the Cloudflare Worker proxy on `store.com/zt/*`). Otherwise skip this step and tell the owner Safari's cap stays.
+
+## 6. Forward to each network's own pixel
 
 `conversions_list_forwarding_rules` with `profile_id` first: a rule to the right destination may exist already.
 
@@ -83,7 +94,23 @@ Then `conversions_create_forwarding_rule` with `profile_id`, `account_id`, `dest
 
 If the destination the page runs is not in the list, the ads account the user connected doesn't own that pixel: ask them to connect the one that does. Never forward to another pixel; the rescan would not verify it, and the network would count the conversions on a pixel the site does not use.
 
-## 6. Verify the events arrive
+## 7. Load the pixels behind the banner
+
+Do this when the scan shows pixels firing before consent, or no Google Consent Mode v2.
+
+`conversions_update_tracking_site` with `site_id` and `body` holding the site's `pixels`, one per pixel id the scan read, and `consentModeBridge: true`:
+
+```json
+{ "pixels": [{ "platform": "meta", "id": "1234567890123456" }, { "platform": "google", "id": "G-TEST1234" }], "consentModeBridge": true }
+```
+
+`platform` is `meta`, `google` (`AW-` or `G-` ids), `tiktok`, `linkedin`, `pinterest`, `snapchat`, `reddit`, `x` or `microsoft`. The list replaces the one before.
+
+Then remove the hand-installed copies of those pixels from the page code, Tag Manager and store apps, so each loads once, through the tag. Show the user the diff first.
+
+In the EEA, UK and Switzerland the tag loads them only after the cookie banner grants consent. Visitors who decline stay untracked: nothing recovers their conversions. See https://docs.zernio.com/products/server-side-tracking/pixels.
+
+## 8. Verify the events arrive
 
 After the deploy, ask the user to open the site in a normal browser, accept cookies, and make one test conversion. Headless browsers are flagged as bots and their conversions are never stored or forwarded, so a headless test proves nothing.
 
@@ -93,11 +120,21 @@ After the deploy, ask the user to open the site in a normal browser, accept cook
 
 Tell the user where to see it on each platform too: Meta Events Manager (events received from Server, about 20 minutes), TikTok Events Manager (about 30 minutes), Google Ads conversion diagnostics (hours).
 
-## 7. Rescan
+## 9. Rescan
 
 `conversion_audit_audit_conversion_tracking` again. A network turns `status: "good"` with `serverSideVerified: true` once the site's events reached that network's destination in the last 7 days; Meta, TikTok and GA4 also need it to be the pixel or measurement id on the page. Report the old and new score and each network's status.
 
-A network still at `status: "warn"` with `serverSideStatus: "likely"` and `relayedBy: "zernio-tag"` means the tag is on the page but no matching delivery was found: recheck step 5 (the destination id must equal the page's id) and step 6. Without `relayedBy`, the scan also sees another server-side tool (such as a server Tag Manager container) and cannot verify the Zernio tag alone: tell the user, don't loop.
+A network still at `status: "warn"` with `serverSideStatus: "likely"` and `relayedBy: "zernio-tag"` means the tag is on the page but no matching delivery was found: recheck step 6 (the destination id must equal the page's id) and step 8. Without `relayedBy`, the scan also sees another server-side tool (such as a server Tag Manager container) and cannot verify the Zernio tag alone: tell the user, don't loop.
+
+## How the scan credits it
+
+- On a page whose Zernio tag runs the Consent Mode bridge, the scan passes Consent Mode.
+- When every pixel on the page is one the tag loads, and the scan observed no consent timing of its own, it marks the pixels as waiting for consent by the tag's settings, not as observed. What a browser in those countries observes always wins.
+
+## If it fails
+
+- `proxy.status` is `unsigned`: the proxy reaches Zernio without a valid signature. Set the current `proxy.secret` in the proxy and redeploy, then check again.
+- `proxy.status` is `unreachable`: the proxy is not deployed, or forwards another path. Open `https://<domain>/zt/z.js` to check.
 
 ## What this does not do
 
