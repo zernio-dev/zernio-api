@@ -1,8 +1,8 @@
 # Ads
 
-Create and manage paid ad campaigns across 7 ad networks from the same API used for organic posts.
+Create and manage paid ad campaigns across 9 ad networks (Meta, Google, TikTok, LinkedIn, Pinterest, X, Reddit, OpenAI, Microsoft) from the same API used for organic posts.
 
-**Supported ad platforms:** `facebook`, `instagram`, `tiktok`, `linkedin`, `pinterest`, `google`, `twitter`
+**`platform` values:** `facebook`, `instagram`, `tiktok`, `linkedin`, `pinterest`, `google`, `twitter`, `reddit`, `openai`, `microsoft`
 
 **Requires the Ads add-on.** Endpoints return `403 Ads add-on required` without it.
 
@@ -27,13 +27,17 @@ Create and manage paid ad campaigns across 7 ad networks from the same API used 
 | GET    | `/v1/ads/audiences/{audienceId}` | Audience details + fresh Meta data |
 | DELETE | `/v1/ads/audiences/{audienceId}` | Delete audience from platform + Zernio |
 | POST   | `/v1/ads/audiences/{audienceId}/users` | Upload users to a customer_list audience (SHA-256 hashed server-side) |
-| POST   | `/v1/ads/conversions` | Send conversion events to Meta / Google Conversions API |
-| GET    | `/v1/accounts/{accountId}/conversion-destinations` | List pixels (Meta) or conversion actions (Google) |
+| PATCH  | `/v1/ads/campaigns/{campaignId}/negative-keywords` | Add or remove single campaign-level negative keywords (Google) |
+| PATCH  | `/v1/ads/accounts/negative-keyword-lists/{listId}/keywords` | Add or remove single keywords in a shared negative keyword list (Google) |
+| GET    | `/v1/ads/conversions/destinations` | List pixels, conversion actions and other destinations of an ads account |
+| POST   | `/v1/events/forwarding-rules` | Save which destinations receive your events |
+| POST   | `/v1/events` | Send conversion events to every saved destination |
+| GET    | `/v1/conversion-audit` | Conversion Leak Report: scan a site's ad tracking |
 
 ## Listing Ads
 
 ```bash
-# Defaults to last 90 days; max 90-day range
+# Defaults to last 90 days
 curl "https://zernio.com/api/v1/ads?platform=facebook&status=active&limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
@@ -129,7 +133,21 @@ curl -X PUT https://zernio.com/api/v1/ads/AD_ID \
   }'
 ```
 
-Only `status`, `budget`, `name`, and `targeting` are mutable. **Targeting updates are Meta-only** — on other platforms the targeting must be set at creation and cannot be modified.
+`status`, `budget`, `name` and `targeting` are mutable. **Targeting updates are Meta-only**: on other platforms the targeting is set at creation.
+
+Google Search responsive search ads also take `headlines` (3-15), `descriptions` (2-4), `finalUrls`, and the display paths `path1` and `path2` (15 characters each; `path2` needs `path1`; an empty string clears one).
+
+## Google Negative Keywords
+
+Edit single negatives without resending the whole set. `remove` wins over `add` for the same keyword, existing keywords are not added twice, and bare strings mean broad match:
+
+```bash
+curl -X PATCH https://zernio.com/api/v1/ads/campaigns/CAMPAIGN_ID/negative-keywords \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{ "accountId": "ACCOUNT_ID", "add": ["free"], "remove": [{ "text": "jobs", "matchType": "phrase" }] }'
+```
+
+The same `add` / `remove` body on `PATCH /v1/ads/accounts/negative-keyword-lists/{listId}/keywords` edits a shared list, which changes every campaign using it. `PUT` on either path replaces the full set.
 
 ## Campaign Controls
 
@@ -141,7 +159,7 @@ curl -X PUT https://zernio.com/api/v1/ads/campaigns/CAMPAIGN_ID/status \
   -d '{ "status": "paused", "platform": "facebook" }'
 ```
 
-Response includes `updated`, `skipped`, `skippedReasons` — ads in terminal states (`rejected`, `completed`, `cancelled`) are auto-skipped.
+Response includes `updated`, `skipped`, `skippedReasons`. Ads in terminal states (`rejected`, `completed`, `cancelled`) are auto-skipped.
 
 The `/v1/ads/tree` endpoint gives the full Campaign > Ad Set > Ad hierarchy with metrics rolled up at every level. Ads without a campaign/ad set ID are grouped into `Ungrouped` buckets.
 
@@ -211,53 +229,64 @@ Each user needs at least `email` or `phone`. PII is SHA-256 hashed server-side. 
 
 ## Conversions API
 
-Relay conversion events to Meta (via Graph API) or Google Ads (Data Manager `ingestEvents`). Platform is inferred from `accountId`.
+`POST /v1/events` sends server-side conversions to 18 destinations: the 9 ad networks plus Snapchat, The Trade Desk, Amazon Ads, AppLovin, GA4, Klaviyo, Attentive, Impact and Awin. Each event is formatted and hashed the way each platform needs.
 
 ```bash
-# List valid destinations first
-curl "https://zernio.com/api/v1/accounts/ACCOUNT_ID/conversion-destinations" \
+# 1. Find the destination (a Meta pixel, a Google conversion action...)
+curl "https://zernio.com/api/v1/ads/conversions/destinations?accountId=ACCOUNT_ID" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
-# Send events
-curl -X POST https://zernio.com/api/v1/ads/conversions \
+# 2. Save a forwarding rule, once per destination
+curl -X POST https://zernio.com/api/v1/events/forwarding-rules \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{ "profileId": "PROFILE_ID", "accountId": "ACCOUNT_ID", "destinationId": "123456789012345" }'
+
+# 3. Send events: each one reaches every saved destination
+curl -X POST https://zernio.com/api/v1/events \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "accountId": "META_ACCOUNT_ID",
-    "destinationId": "123456789012345",
-    "events": [
-      {
-        "eventName": "Purchase",
-        "eventTime": 1713600000,
-        "eventId": "order_42",
-        "userData": { "email": "alice@example.com" },
-        "customData": { "value": 49.99, "currency": "USD" }
-      }
-    ]
+    "profileId": "PROFILE_ID",
+    "events": [{
+      "eventName": "Purchase",
+      "eventTime": 1713600000,
+      "eventId": "order_42",
+      "value": 49.99,
+      "currency": "USD",
+      "user": { "email": "alice@example.com", "country": "US" },
+      "consent": { "adStorage": "GRANTED", "adUserData": "GRANTED", "adPersonalization": "GRANTED" }
+    }]
   }'
 ```
 
-**destinationId semantics:**
-- **Meta:** pixel / dataset ID (e.g. `"123456789012345"`)
-- **Google:** full resource name (e.g. `"customers/1234567890/conversionActions/987654321"`)
+- **Required:** `eventName`, `eventTime` (unix **seconds**), `eventId`, `user`. Up to 1,000 events per request.
+- **Hashing:** send plain identifiers; Zernio hashes them per platform.
+- **Dedup:** `eventId` is unique per profile. Resending it replaces the stored event, and platforms use it to drop the pixel's copy.
+- **Click ids** (`fbc`, `gclid`, `ttclid`...) go in `user.clickIds` and tie the event to its campaign.
+- **Consent:** `consent` carries `adStorage`, `adUserData`, `adPersonalization` and `analyticsStorage` (`GRANTED` / `DENIED`). On profiles created since 2026-11-22, for a visitor in the EEA, UK or Switzerland a missing signal counts as denied: Google Ads still gets the event with the denied signals, GA4 only with `analyticsStorage` granted, and every other destination only with `adUserData` granted and no ad signal denied. An event left out is still stored, and its send shows `dropped` with `consent_denied` or `consent_missing`.
+- **Test:** `testCode` routes events to each platform's test mode; test events are not stored.
 
-**Hashing:** all PII (email, phone, names, external IDs) is hashed server-side per each platform's normalization spec (including Google's Gmail-specific dot / plus-suffix stripping). **Send plaintext** — hashing yourself is redundant and will break matching.
+`POST /v1/ads/conversions` (one destination per call) is legacy but keeps working. `GET /v1/accounts/{accountId}/conversion-destinations` is deprecated: use `GET /v1/ads/conversions/destinations`.
 
-**Batching is automatic.** Meta caps at 1,000 events per request and rejects the entire batch if any event is malformed. Google caps at 2,000. Zernio chunks automatically.
+Docs: https://docs.zernio.com/products/conversions-api
 
-**Dedup:** always send a stable `eventId`. Meta uses it to dedupe against pixel events; Google maps it to `transactionId`.
+## Conversion Leak Report
 
-**EEA/UK (Google):** include `consent.adUserData` and `consent.adPersonalization` (`GRANTED` / `DENIED`) under the Feb 2026 restrictions. Meta ignores `consent`.
+A free scan of a site's ad tracking: which pixels fire, which wait for consent, which keep sending after Reject, and which networks also get server-side conversions.
 
-**Meta test mode:** pass `testCode` ("test_event_code" passthrough). Ignored by Google.
+- Web: [is-bleeding.com](https://is-bleeding.com). Terminal: `npx is-bleeding yourshop.com` (`--prompt` prints a fix prompt for a coding agent, `--json` the raw response).
+- `GET /v1/conversion-audit?url=yourshop.com` scans (the API key is optional); `GET /v1/conversion-audit/latest` reads a host's stored report without scanning again.
+- `GET /v1/conversion-audit/meta-audit` reads what Meta Events Manager recorded for a connected pixel over the last 7 days (server share, Event Match Quality, dedup coverage).
+- `POST /v1/conversion-audit/monitors` with `url` rescans the homepage daily and emails when tracking breaks (up to 25 domains; `GET` lists them).
 
-Response exposes `eventsReceived`, `eventsFailed`, `failures[]` (with `eventIndex`, `eventId`, `message`, `code`), and a `traceId` (`fbtrace_id` for Meta, `requestId` for Google). Meta is all-or-nothing per chunk; Google reports request-level success only.
+To fix what it finds, follow [fix-conversion-tracking.md](fix-conversion-tracking.md).
 
 ## Ad Account Prerequisites
 
-Some platforms need a separate ads connection before their ad endpoints work — otherwise `GET /v1/ads/accounts` returns `422 Platform ads connection required`:
+Some platforms need a separate ads connection before their ad endpoints work; otherwise `GET /v1/ads/accounts` returns `422 Platform ads connection required`:
 
-- **TikTok Ads** — connect via `/v1/connect/tiktokads`
-- **X/Twitter Ads** — connect via `/v1/connect/twitterads`
-- **Instagram ads** — require a linked Facebook account (Meta inherits this from Facebook ad accounts)
+- **Meta, LinkedIn, Pinterest:** `GET /v1/connect/{platform}/ads` reuses the posting account's token when it can.
+- **TikTok, X:** `GET /v1/connect/tiktok/ads` or `/v1/connect/twitter/ads`, with their own token (X needs the posting `accountId`).
+- **Google, Reddit, Microsoft:** standalone, `GET /v1/connect/googleads/ads`, `/v1/connect/redditads/ads`, `/v1/connect/microsoftads/ads`.
+- **OpenAI:** an API key from ChatGPT Ads Manager, `POST /v1/connect/openai-ads/credentials`.
 
-Meta (Facebook), LinkedIn, Pinterest, and Google Ads use the same connection as organic posting.
+See [connect.md](connect.md).

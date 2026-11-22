@@ -1,9 +1,41 @@
-# Sequences & Comment Automations
+# Automations, Sequences & Comment Automations
 
-Two related automation systems:
+`/v1/automations` creates and manages every kind of automation in one shape: a `trigger`, what it checks, the `steps` it takes and its `limits`. The older `/v1/sequences` and `/v1/comment-automations` routes below keep working on the same automations.
 
-- **Sequences** — multi-step drip campaigns. Each step has a delay + a message (or WhatsApp template). Enrolled contacts walk through the steps on a timer.
-- **Comment automations** — Instagram / Facebook comment-to-DM triggers. When someone comments with a matching keyword, they receive an automatic DM (and optionally a public reply).
+## Automations (`/v1/automations`)
+
+| Kind | `trigger.type` |
+|------|----------------|
+| Event automation (a post failed, an order came in...) | The event, e.g. `post.failed` |
+| Scheduled check of recent posts (e.g. boost winners) | `schedule` with `subjects.each: "post"` |
+| Ad rule (campaigns, ad sets, ads, keywords, search terms) | `schedule` with `subjects.each`: `campaign`, `adset`, `ad`, `keyword` or `search_term` |
+| Sequence | `enrollment` |
+| Comment to DM | `comment.keyword`, `comment.live`, `story.reply`, `story.mention` |
+| Flow (`kind: "workflow"`, the workflow builder's graph) | Read from the graph's trigger node |
+
+```bash
+curl -X POST https://zernio.com/api/v1/automations \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "name": "Failed Instagram posts to Slack",
+    "trigger": {
+      "type": "post.failed",
+      "profileId": "PROFILE_ID",
+      "filter": { "field": "platform", "op": "equals", "value": "instagram" }
+    },
+    "steps": [{ "type": "notify.send", "to": [{ "accountId": "SLACK_ACCOUNT_ID", "channelId": "C0123456789" }] }],
+    "limits": { "cooldown": "1h" }
+  }'
+```
+
+- `GET /v1/automations/catalog` lists every event, fact and step the API accepts.
+- `GET /v1/automations?kind=sequence,comment` lists by kind (`workflow` for flows). Reading a comment-to-DM automation returns it in the shape `POST` and `PATCH` take: the easiest way to write one.
+- `PATCH /v1/automations/{automationId}` takes the fields you change, with the `version` you read as `If-Match`. `POST .../activate` and `.../pause` switch it.
+- Ad rules: `POST /v1/automations/backtest` replays a draft over the last 30 days; an `approval.request` step makes each change wait for a team member.
+- A refused automation answers `400` with each problem in `details.problems`.
+- Sequences and comment to DM need the inbox add-on; ad rules need the Ads add-on to create or edit.
+
+Docs: https://docs.zernio.com/guides/automations
 
 ## Sequences
 
