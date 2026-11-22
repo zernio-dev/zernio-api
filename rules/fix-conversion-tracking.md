@@ -26,7 +26,7 @@ A platform with `status: "good"` is done. The others are the ones to fix. `fixPr
 
 1. `profiles_list`, and ask the user which profile the site belongs to when there is more than one.
 2. `accounts_list` with that `profile_id` and the ads platform (`metaads`, `googleads`, `tiktokads`, `linkedinads`, `pinterestads`, `xads`, `redditads`, `microsoftads`, `snapchatads`). Keep each ads account's id.
-3. For a network with no ads account: `connect_ads` with `profile_id` and `platform` (`facebook` for Meta, `googleads`, `tiktok`, `linkedin`, `pinterest`, `twitter`, `redditads`, `microsoftads`) returns an `authUrl`. Give it to the user to open in their browser, wait until they say it is done, then list the accounts again.
+3. For a network with no ads account: `connect_ads` with `profile_id` and `platform` (`facebook` for Meta, `googleads`, `tiktok`, `linkedin`, `pinterest`, `twitter`, `redditads`, `microsoftads`) returns an `authUrl`. Give it to the user to open in their browser, wait until they say it is done, then list the accounts again. Google Analytics 4 connects with `connect_get_google_analytics_connect_url` instead (then `connect_list_google_analytics_properties` and `connect_select_google_analytics_property`).
 
 ## 3. Create the tracking site
 
@@ -74,8 +74,8 @@ For each network to fix, `conversions_list_ad_conversion_destinations` with the 
 |---|---|
 | Meta | The pixel whose `id` equals the id the scan read (`ids`) |
 | TikTok | `pixel:<code>` for the pixel code the scan read, not an Offline Event Set |
-| Google Analytics 4 | The `G-...` measurement id the scan read |
-| Google Ads | A conversion action per conversion you send (create one with `conversions_create_ad_conversion_destination` if none fits) |
+| Google Ads | A conversion action per conversion you send, in the account behind the page's `AW-` tag (create one with `conversions_create_ad_conversion_destination` if none fits) |
+| Google Analytics 4 | The `G-...` measurement id the scan read. On a page that also runs an `AW-` tag, only a Google Ads rule verifies the network |
 | LinkedIn | A conversion rule per conversion you send |
 | Others | The pixel the page runs |
 
@@ -97,7 +97,7 @@ Tell the user where to see it on each platform too: Meta Events Manager (events 
 
 `conversion_audit_audit_conversion_tracking` again. A network turns `status: "good"` with `serverSideVerified: true` once the site's events reached that network's destination in the last 7 days; Meta, TikTok and GA4 also need it to be the pixel or measurement id on the page. Report the old and new score and each network's status.
 
-A network still at `likely` means the tag is on the page but no matching delivery was found: recheck step 5 (the destination id must equal the page's id) and step 6.
+A network still at `status: "warn"` with `serverSideStatus: "likely"` and `relayedBy: "zernio-tag"` means the tag is on the page but no matching delivery was found: recheck step 5 (the destination id must equal the page's id) and step 6. Without `relayedBy`, the scan also sees another server-side tool (such as a server Tag Manager container) and cannot verify the Zernio tag alone: tell the user, don't loop.
 
 ## What this does not do
 
